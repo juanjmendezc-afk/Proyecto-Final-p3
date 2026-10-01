@@ -160,7 +160,7 @@ defmodule Reportes do
   end
 
   def reporte_r8(recolectores, lotes, pesajes_validos) do
-    lotes_requeridos = Enum.map(lotes, fn lote -> lote.id end) |> MapSet.new()
+    lotes_requeridos = Enum.map(lotes, fn lote -> lote.id end)
 
     recolectores_todos_lotes =
       Enum.filter(recolectores, fn recolector ->
@@ -168,9 +168,9 @@ defmodule Reportes do
           pesajes_validos
           |> pesajes_de_recolector(recolector.codigo)
           |> Enum.map(fn pesaje -> pesaje.lote end)
-          |> MapSet.new()
+          |> Enum.uniq()
 
-        MapSet.subset?(lotes_requeridos, lotes_recolector)
+        Enum.all?(lotes_requeridos, fn lote -> lote in lotes_recolector end)
       end)
 
     unir_lineas([
